@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>My Tasks</title>
+</head>
+<body>
+<h1>My Tasks</h1>
+
+<div th:each="task : ${tasks}">
+  <h3 th:text="${task.title}"></h3>
+  <p th:text="${task.description}"></p>
+  <span th:text="${task.completed} ? 'Completed' : 'Pending'"></span>
+  <!-- Другие поля -->
+</div>
+
+<a th:href="@{/tasks/create}">Add New Task</a>
+</body>
+</html>
