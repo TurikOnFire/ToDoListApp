@@ -1,7 +1,6 @@
 package com.TurikOnFire.ToDoApp.controller;
 
 import com.TurikOnFire.ToDoApp.entity.Task;
-import com.TurikOnFire.ToDoApp.entity.User;
 import com.TurikOnFire.ToDoApp.repository.CategoryRepository;
 import com.TurikOnFire.ToDoApp.repository.TaskRepository;
 import com.TurikOnFire.ToDoApp.service.UserService;
@@ -27,7 +26,6 @@ public class TaskController {
         this.userService = userService;
     }
 
-    // Внедрение зависимостей через конструктор
 
     @GetMapping
     public String listTasks(Model model,
@@ -47,9 +45,8 @@ public class TaskController {
     @PostMapping("/create")
     public String createTask(@ModelAttribute Task task,
                              @AuthenticationPrincipal UserDetails userDetails) {
-        // Логика сохранения задачи
+
         return "redirect:/tasks";
     }
 
-    // Другие методы: редактирование, удаление, пометка как выполненной
 }

@@ -14,10 +14,6 @@ public class Category {
     @Column(nullable = false)
     private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
     @OneToMany(mappedBy = "category")
     private List<Task> tasks;
 
@@ -37,14 +33,6 @@ public class Category {
         this.name = name;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public List<Task> getTasks() {
         return tasks;
     }
@@ -53,5 +41,4 @@ public class Category {
         this.tasks = tasks;
     }
 
-    // Конструкторы, геттеры, сеттеры
 }

@@ -27,9 +27,6 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Task> tasks;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Category> categories;
-
     public Long getId() {
         return id;
     }
@@ -78,13 +75,4 @@ public class User {
         this.tasks = tasks;
     }
 
-    public List<Category> getCategories() {
-        return categories;
-    }
-
-    public void setCategories(List<Category> categories) {
-        this.categories = categories;
-    }
-
-    // Конструкторы, геттеры, сеттеры
 }

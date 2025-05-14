@@ -1,6 +1,7 @@
 package com.TurikOnFire.ToDoApp.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 
@@ -15,6 +16,9 @@ public class Task {
     private String title;
 
     private String description;
+
+    @Column(nullable = false)
+    @ColumnDefault("false")
     private boolean completed;
 
     @Column(name = "due_date")
@@ -30,7 +34,7 @@ public class Task {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
     public Long getId() {
@@ -105,5 +109,4 @@ public class Task {
         this.category = category;
     }
 
-    // Конструкторы, геттеры, сеттеры
 }
