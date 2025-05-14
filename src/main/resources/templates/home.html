@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,5 +12,11 @@
     <form th:action="@{/logout}" method="post">
         <button class="btn btn-outline-danger" type="submit">Выйти</button>
     </form>
+    <div sec:authorize="hasRole('ADMIN')" class="border-1 border-success">
+        Добро пожаловать, Админ!
+    </div>
+    <div sec:authorize="hasRole('USER')" class="border-1 border-danger-subtle">
+        Добро пожаловать, Юзер!
+    </div>
 </body>
 </html>

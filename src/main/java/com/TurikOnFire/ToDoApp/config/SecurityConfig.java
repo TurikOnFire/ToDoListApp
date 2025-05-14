@@ -22,8 +22,8 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/public/**").permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/admin/**").hasAnyRole("ADMIN", "ROOT")
+                        .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN", "ROOT")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -57,10 +57,16 @@ public class SecurityConfig {
         UserDetails admin = User.builder()
                 .username("admin")
                 .password(passwordEncoder.encode("admin"))
-                .roles("ADMIN", "USER")
+                .roles("ADMIN")
                 .build();
 
-        return new InMemoryUserDetailsManager(user, admin);
+        UserDetails root = User.builder()
+                .username("root")
+                .password(passwordEncoder.encode("root"))
+                .roles("ADMIN", "USER", "ROOT")
+                .build();
+
+        return new InMemoryUserDetailsManager(user, admin, root);
     }
 
 //    Аутентификация через БД (табличек нет)
