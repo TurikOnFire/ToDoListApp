@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="UTF-8">
-  <title>My Tasks</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
 </head>
 <body>
 <h1>My Tasks</h1>
@@ -12,10 +13,25 @@
 <div th:each="task : ${tasks}">
   <h3 th:text="${task.title}"></h3>
   <p th:text="${task.description}"></p>
-  <span th:text="${task.completed} ? 'Completed' : 'Pending'"></span>
+  <span sec:authorize="hasAnyRole('USER', 'ADMIN')" th:text="${task.completed} ? 'Completed' : 'Pending'"></span>
+  <div sec:authorize="hasRole('ADMIN')" class="switch-container" th:if="not ${task.completed}">
+    <form th:action="@{/tasks/{id}/complete (id=${task.id})}" method="post">
+      <input type="hidden" name="id" th:value="${task.id}">
+      <button class="btn btn-outline-primary" type="submit">Закрыть задачу</button>
+    </form>
+  </div>
+  <div sec:authorize="hasRole('ADMIN')" class="switch-container" th:if="${task.completed}">
+    <form th:action="@{/tasks/{id}/complete (id=${task.id})}" method="post">
+      <input type="hidden" name="id" th:value="${task.id}">
+      <button class="btn btn-outline-primary" type="submit">Переоткрыть задачу</button>
+    </form>
+  </div>
   <!-- Другие поля -->
 </div>
 
-<a th:href="@{/tasks/create}">Add New Task</a>
+<a class="btn btn-outline-info" th:href="@{/tasks/create}">Add New Task</a>
+<a class="btn btn-outline-primary" th:href="@{/home}">Home</a>
+
+
 </body>
 </html>
