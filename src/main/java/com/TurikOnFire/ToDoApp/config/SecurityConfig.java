@@ -1,25 +1,32 @@
 package com.TurikOnFire.ToDoApp.config;
 
+import com.TurikOnFire.ToDoApp.repository.AuthorityRepository;
+import com.TurikOnFire.ToDoApp.repository.UserRepository;
+import com.TurikOnFire.ToDoApp.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final UserDetailsService userDetailsService;
+
+    public SecurityConfig(CustomUserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .userDetailsService(userDetailsService)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/public/**").permitAll()
                         .requestMatchers("/admin/**").hasAnyRole("ADMIN", "ROOT")
@@ -46,34 +53,34 @@ public class SecurityConfig {
     }
 
 //    Аутентификация встроенная "InMemory"
-    @Bean
-    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-        UserDetails user = User.builder()
-                .username("user")
-                .password(passwordEncoder.encode("password"))
-                .roles("USER")
-                .build();
-
-        UserDetails admin = User.builder()
-                .username("admin")
-                .password(passwordEncoder.encode("admin"))
-                .roles("ADMIN")
-                .build();
-
-        UserDetails root = User.builder()
-                .username("root")
-                .password(passwordEncoder.encode("root"))
-                .roles("ADMIN", "USER", "ROOT")
-                .build();
-
-        return new InMemoryUserDetailsManager(user, admin, root);
-    }
-
-//    Аутентификация через БД (табличек нет)
 //    @Bean
-//    public UserDetailsService userDetailsService(DataSource dataSource) {
-//        return new JdbcUserDetailsManager(dataSource);
+//    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
+//        UserDetails user = User.builder()
+//                .username("user")
+//                .password(passwordEncoder.encode("password"))
+//                .roles("USER")
+//                .build();
+//
+//        UserDetails admin = User.builder()
+//                .username("admin")
+//                .password(passwordEncoder.encode("admin"))
+//                .roles("ADMIN")
+//                .build();
+//
+//        UserDetails root = User.builder()
+//                .username("root")
+//                .password(passwordEncoder.encode("root"))
+//                .roles("ADMIN", "USER", "ROOT")
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(user, admin, root);
 //    }
+
+//    Аутентификация через БД
+    @Bean
+    public UserDetailsService userDetailsService(UserRepository dataSource, AuthorityRepository authorityRepository) {
+        return new CustomUserDetailsService(dataSource, authorityRepository);
+    }
 
 //    Шифрование паролей
     @Bean
